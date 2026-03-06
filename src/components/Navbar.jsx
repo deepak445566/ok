@@ -1,104 +1,61 @@
 import React, { useEffect, useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
 import logo from '/logo.png'
 
-// Custom Icons - More refined
+// Enhanced Icons
 const CartIcon = () => (
-  <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
   </svg>
 )
 
 const UserIcon = () => (
-  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
   </svg>
 )
 
 const MenuIcon = ({ open }) => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     {open ? (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
     ) : (
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 6h16M4 12h16M4 18h16" />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />
     )}
+  </svg>
+)
+
+const SearchIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
   </svg>
 )
 
 function Navbar() {
   const [open, setOpen] = useState(false)
-  const [loggingOut, setLoggingOut] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileUserMenuOpen, setMobileUserMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   
   const {
     user,
-    setUser,
     setShowLogin,
     navigate,
     getCartCount,
-    axios,
     logout: contextLogout
   } = useAppContext()
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      setIsScrolled(window.scrollY > 10)
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleLogout = async () => {
-    setOpen(false)
-    setMobileUserMenuOpen(false)
-    setLoggingOut(true)
-    
-    try {
-      await contextLogout();
-      toast.success("Logged out successfully", {
-        style: {
-          background: '#10b981',
-          color: '#fff',
-          borderRadius: '4px',
-        },
-      });
-    } catch (error) {
-      console.error("Logout error:", error)
-      toast.error("Session expired")
-    } finally {
-      setLoggingOut(false)
-    }
-  }
-
-  const handleOrdersClick = () => {
-    setOpen(false)
-    setMobileUserMenuOpen(false)
-    navigate('/myOrders')
-  }
-
-  const handleLoginClick = () => {
-    setOpen(false)
-    setMobileUserMenuOpen(false)
-    setShowLogin(true)
-  }
-
-  // Close mobile menu on resize to desktop
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setOpen(false)
-        setMobileUserMenuOpen(false)
-      }
-    }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Prevent body scroll when mobile menu is open
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden'
@@ -110,212 +67,251 @@ function Navbar() {
     }
   }, [open])
 
+  const handleLogout = async () => {
+    try {
+      await contextLogout();
+      toast.success("Logged out successfully");
+      setMobileUserMenuOpen(false);
+    } catch (error) {
+      toast.error("Error logging out");
+    }
+  }
+
+  const cartCount = getCartCount ? getCartCount() : 0
+
   return (
     <>
       <nav className={`
-        fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out
+        fixed top-0 left-0 right-0 z-50 transition-all duration-500
         ${isScrolled 
-          ? 'bg-[#e0d7b8] backdrop-blur-md shadow-sm py-4' 
-          : 'bg-[#DEAD6A] backdrop-blur-sm py-6 md:py-8'
+          ? 'bg-white/95 backdrop-blur-md shadow-lg py-2' 
+          : 'bg-white py-2'
         }
       `}>
-        <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             
-            {/* Logo - Left with image */}
-           <NavLink 
-  to='/' 
-  className="relative group z-50 inline-block"
->
-  <div className="flex items-center gap-4">
-    <img 
-      src={logo} 
-      alt="Creation Empire" 
-      className="h-20 w-auto object-contain transition-transform duration-500 group-hover:scale-105"
-    />
-    <div className="flex flex-col items-center lg:items-start">
-      {/* Main Title - Now using Roboto Slab */}
-      {/* Main Title - Updated with helper class */}
-<span className="text-xl md:text-2xl lg:text-3xl font-light tracking-[0.2em] text-gray-900 font-roboto-slab">
-  CREATION EMPIRE
-</span>
-      
-      {/* Subtitle */}
-      <div className="flex items-center w-full mt-1">
-        {/* Decorative line that grows on hover */}
-        <div className="h-[1px] w-4 bg-amber-600/30 transition-all duration-700 group-hover:w-8" />
-        
-        <span className="px-2 text-[10px] md:text-xs tracking-[0.5em] text-gray-500 font-['Poppins'] uppercase whitespace-nowrap">
-          BY PRIYA
-        </span>
-        
-        <div className="h-[1px] flex-grow bg-gray-100 group-hover:bg-amber-100 transition-all duration-700" />
-      </div>
-    </div>
-  </div>
+            {/* Logo with hover effect */}
+            <NavLink 
+              to="/" 
+              className="relative group h-17 w-30 lg:h-23 lg:w-55 overflow-hidden"
+            >
+              <img 
+                src='/public/logo4.jpg' 
+                alt="Brand Logo"
+                className='w-full h-full object-contain transition-transform duration-500 '
+              />
+            </NavLink>
 
-  {/* Refined Underline expansion from center */}
-  <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-neutral-800 transition-all duration-700 ease-in-out -translate-x-1/2 group-hover:w-full opacity-50" />
-</NavLink>
-
-            {/* Desktop Navigation - Center */}
-            <div className="hidden md:flex items-center space-x-12 ">
+            {/* Desktop Navigation with hover effects */}
+            <div className="hidden md:flex items-center space-x-1">
               {[
                 { to: '/', label: 'Home' },
-                { to: '/products', label: 'Collection' },
+                { to: '/products', label: 'Shop' },
                 { to: '/contact', label: 'Contact' },
               ].map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) => `
-                    relative text-sm tracking-wider font-light py-2
-                    after:content-[''] after:absolute after:bottom-0 after:left-1/2 
-                    after:-translate-x-1/2 after:w-0 after:h-[1px] after:bg-gray-600
-                    after:transition-all after:duration-300
-                    hover:after:w-full
-                    ${isActive ? 'text-black after:w-full' : 'text-black hover:text-gray-700'}
+                    relative px-4 py-2 text-md font-medium exo transition-all duration-300
+                    ${isActive 
+                      ? 'text-black' 
+                      : 'text-gray-600 hover:text-black'
+                    }
+                    group
                   `}
                 >
                   {item.label}
+                  <span className={`
+                    absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-black 
+                    transition-all duration-300 group-hover:w-1/2
+                  `} />
                 </NavLink>
               ))}
             </div>
 
-            {/* Right Icons - Desktop */}
-            <div className="hidden md:flex items-center space-x-8 ">
-              <button
-                onClick={() => navigate("/cart")}
-                className="relative group "
-                aria-label="Shopping Bag"
+            {/* Right Icons with improved styling */}
+            <div className="flex items-center space-x-4">
+              {/* Cart with animation */}
+              <button 
+                onClick={() => navigate("/cart")} 
+                className="relative p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all duration-300 group"
               >
                 <CartIcon />
-                {getCartCount() > 0 && (
-                  <span className="absolute -top-2 -right-2 text-[10px] bg-gray-900 text-white w-4 h-4 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                    {getCartCount()}
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[20px] h-5 bg-black text-white text-xs rounded-full flex items-center justify-center px-1 group-hover:scale-110 transition-transform duration-300">
+                    {cartCount}
                   </span>
                 )}
               </button>
 
+              {/* User Menu */}
               {!user ? (
-                <button
-                  onClick={handleLoginClick}
-                  className="relative group text-black"
-                  aria-label="Account"
+                <button 
+                  onClick={() => setShowLogin(true)} 
+                  className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all duration-300"
                 >
                   <UserIcon />
                 </button>
               ) : (
-                <div className="relative group text-black">
-                  <button className="relative" aria-label="Account menu">
-                    <UserIcon />
-                  </button>
-                  <div className="absolute right-0 top-8 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:top-10 transition-all duration-300">
-                    <div className="bg-white shadow-xl border border-gray-100 py-2 mt-4">
-                      <div className="px-5 py-3 border-b border-gray-100">
-                        <p className="text-sm font-medium text-gray-900 truncate">{user?.name || 'Welcome'}</p>
-                        <p className="text-xs text-gray-400 mt-0.5 truncate">{user?.email}</p>
-                      </div>
-                      <button onClick={handleOrdersClick} className="w-full text-left px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">My Orders</button>
-                      <button onClick={handleLogout} disabled={loggingOut} className="w-full text-left px-5 py-3 text-sm text-gray-600 hover:bg-gray-50 hover:text-red-500 transition-colors disabled:opacity-50">
-                        {loggingOut ? 'Signing out...' : 'Sign Out'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Mobile Icons */}
-            <div className="flex md:hidden items-center space-x-4 z-50">
-              <button onClick={() => navigate("/cart")} className="relative text-black">
-                <CartIcon />
-                {getCartCount() > 0 && (
-                  <span className="absolute -top-2 -right-2 text-[10px] bg-gray-900 text-white w-4 h-4 rounded-full flex items-center justify-center">
-                    {getCartCount()}
-                  </span>
-                )}
-              </button>
-
-              {!user ? (
-                <button onClick={handleLoginClick} className="text-black">
-                  <UserIcon />
-                </button>
-              ) : (
                 <div className="relative">
-                  <button onClick={() => setMobileUserMenuOpen(!mobileUserMenuOpen)} className="text-black">
+                  <button 
+                    onClick={() => setMobileUserMenuOpen(!mobileUserMenuOpen)} 
+                    className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all duration-300 relative"
+                  >
                     <UserIcon />
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />
                   </button>
+                  
                   {mobileUserMenuOpen && (
                     <>
-                      <div className="fixed inset-0 z-40" onClick={() => setMobileUserMenuOpen(false)} />
-                      <div className="absolute right-0 top-8 w-48 bg-white shadow-xl border border-gray-100 py-2 z-50">
-                        <div className="px-4 py-2 border-b border-gray-100">
-                          <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
+                      <div 
+                        className="fixed inset-0 z-40" 
+                        onClick={() => setMobileUserMenuOpen(false)} 
+                      />
+                      
+                      <div className="absolute right-0 top-12 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 z-50 animate-slideDown">
+                        {/* User Info */}
+                        <div className="px-4 py-4 border-b border-gray-100">
+                          <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                          <p className="text-xs text-gray-500 truncate mt-1">{user.email}</p>
                         </div>
-                        <button onClick={handleOrdersClick} className="w-full text-left px-4 py-2 text-sm text-gray-600">My Orders</button>
-                        <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-500">Sign Out</button>
+                        
+                        {/* Menu Items */}
+                        <div className="py-2">
+                         
+                          
+                          <button 
+                            onClick={() => { 
+                              setMobileUserMenuOpen(false); 
+                              navigate('/myOrders'); 
+                            }} 
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            My Orders
+                          </button>
+                          
+                       
+                        </div>
+                        
+                        {/* Divider */}
+                        <div className="border-t border-gray-100 my-1" />
+                        
+                        {/* Sign Out */}
+                        <button 
+                          onClick={handleLogout} 
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                          </svg>
+                          Sign Out
+                        </button>
                       </div>
                     </>
                   )}
                 </div>
               )}
-              
-              <button onClick={() => setOpen(!open)} className="text-black">
+
+              {/* Mobile menu button */}
+              <button 
+                onClick={() => setOpen(!open)} 
+                className="md:hidden p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all duration-300"
+              >
                 <MenuIcon open={open} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu Overlay */}
+        {/* Search Bar (expands when search is clicked) */}
         <div className={`
-          fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 md:hidden z-[55]
-          ${open ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}
-        `} onClick={() => setOpen(false)} />
+          absolute left-0 right-0 bg-white border-t border-gray-100 transition-all duration-500 overflow-hidden
+          ${searchOpen ? 'max-h-20 py-4' : 'max-h-0'}
+        `}>
+          <div className="max-w-3xl mx-auto px-4">
+            <div className="relative">
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                className="w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg focus:outline-none focus:border-black transition-colors"
+              />
+              <SearchIcon />
+            </div>
+          </div>
+        </div>
 
-        {/* Mobile Menu Panel - Updated with white background throughout */}
+        {/* Mobile Menu with improved design and X button */}
         <div className={`
-          fixed top-0 right-0 h-full w-72 bg-white shadow-2xl transform transition-transform duration-500 ease-out md:hidden z-[60]
+          fixed inset-0 bg-white/95 backdrop-blur-md z-40 transition-transform duration-500 md:hidden
           ${open ? 'translate-x-0' : 'translate-x-full'}
         `}>
-          <div className="flex flex-col h-full bg-white">
-            {/* Header in side menu */}
-            <div className="p-8 border-b border-gray-50 bg-white">
-              <span className="text-lg font-light tracking-widest text-gray-900">MENU</span>
-            </div>
+          {/* Close button at the top right */}
+          <button 
+            onClick={() => setOpen(false)}
+            className="absolute top-6 right-6 p-3 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-all duration-300 z-50"
+            aria-label="Close menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
-            {/* Links */}
-            <div className="flex-1 px-8 py-10 space-y-8 bg-white">
+          <div className="flex flex-col h-full pt-20 px-6">
+            {/* Mobile Menu Header */}
+            <div className="mb-8 flex justify-between items-center">
+              <h3 className="text-xs font-semibold text-gray-400 tracking-wider">MENU</h3>
+            </div>
+            
+            {/* Navigation Links */}
+            <div className="flex-1 space-y-1">
               {[
-                { to: '/', label: 'Home' },
-                { to: '/products', label: 'Collection' },
-                { to: '/contact', label: 'Contact' },
+                { to: '/', label: 'Home', icon: '🏠' },
+                { to: '/products', label: 'Shop', icon: '🛍️' },
+                { to: '/contact', label: 'Contact', icon: '📞' },
               ].map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) => `
-                    block text-2xl font-extralight tracking-[0.1em] transition-all duration-300
-                    ${isActive ? 'text-gray-900 translate-x-2' : 'text-gray-400 hover:text-gray-700 hover:translate-x-2'}
+                    flex items-center gap-4 py-4 px-4 rounded-lg transition-all duration-300
+                    ${isActive 
+                      ? 'bg-black text-white' 
+                      : 'text-gray-600 hover:bg-gray-100'
+                    }
                   `}
                 >
-                  {item.label}
+                  <span className="text-xl">{item.icon}</span>
+                  <span className="text-lg font-medium">{item.label}</span>
                 </NavLink>
               ))}
             </div>
 
-            {/* Footer in side menu */}
-            <div className="p-8 bg-white border-t border-gray-50">
-              <p className="text-[10px] tracking-[0.3em] text-gray-400 uppercase">Creation Empire By Priya</p>
+            {/* Mobile Menu Footer */}
+            <div className="py-6 border-t border-gray-100">
+              <p className="text-xs text-gray-400 text-center">
+                © 2024 Your Brand. All rights reserved.
+              </p>
             </div>
           </div>
+
+          {/* Optional: Tap outside to close (semi-transparent overlay) */}
+          {open && (
+            <div 
+              className="absolute inset-0 bg-black/5 -z-10"
+              onClick={() => setOpen(false)}
+            />
+          )}
         </div>
       </nav>
 
-      {/* Spacer */}
-      <div className={`transition-all duration-700 ${isScrolled ? 'h-20' : 'h-28 md:h-32'}`} />
+      {/* Spacer with smooth transition */}
+      <div className={`transition-all duration-500 ${isScrolled ? 'h-16' : 'h-24'}`} />
     </>
   )
 }
