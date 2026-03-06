@@ -124,7 +124,7 @@ function Footer() {
     <footer 
       className="relative mt-16 md:mt-24 bg-cover bg-center bg-no-repeat"
       style={{ 
-        backgroundImage: "url('/public/foo.jpg')" 
+        backgroundImage: "url('./foo.jpg')" 
       }}
     >
       {/* Dark overlay with gradient for better text readability */}
