@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // Import laptop/desktop videos
 import laptopVideo1 from '/public/vl1.mp4';
 import laptopVideo2 from '/public/vl2.mp4';
-
+import laptopVideo3 from '/public/vl3.mp4';
 // Import mobile videos
 import mobileVideo1 from '/public/vi2.mp4';
 import mobileVideo2 from '/public/vi1.mp4';
@@ -75,9 +75,9 @@ function HeroSection() {
 
   // Laptop/Desktop videos data
   const laptopVideos = [
-    {
+     {
       id: 1,
-      src: laptopVideo1,
+      src: laptopVideo3,
       alt: "Laptop Heritage Collection",
       title: "Heritage Collection",
       subtitle: "Timeless Weaves",
@@ -85,6 +85,14 @@ function HeroSection() {
     },
     {
       id: 2,
+      src: laptopVideo1,
+      alt: "Laptop Heritage Collection",
+      title: "Heritage Collection",
+      subtitle: "Timeless Weaves",
+      color: "from-amber-900/40"
+    },
+    {
+      id: 3,
       src: laptopVideo2,
       alt: "Laptop Contemporary Grace",
       title: "Contemporary Grace",

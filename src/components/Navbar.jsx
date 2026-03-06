@@ -94,21 +94,25 @@ function Navbar() {
             {/* Logo with hover effect */}
            <NavLink 
   to="/" 
-  className="flex items-center h-16 w-40 lg:h-20  lg:w-50 overflow-hidden"
+  className="h-23 w-30"
 >
   <img 
     src={logo} 
     alt="Brand Logo"
-    className="w-full h-full   "
+    className="w-full h-full object-contain  "
   />
 
-  <span className="text-lg lg:text-2xl font-semibold leading-6 play">
+ 
+</NavLink>
+ <span className="text-2xl uppercase lg:text-4xl text-black font-semibold leading-6 big px-6 py-4 rounded-3xl ">
     Creation Empire
   </span>
-</NavLink>
-
             {/* Desktop Navigation with hover effects */}
-            <div className="hidden md:flex items-center space-x-1">
+          
+
+            {/* Right Icons with improved styling */}
+            <div className="flex items-center space-x-4">
+                <div className="hidden md:flex items-center space-x-1">
               {[
                 { to: '/', label: 'Home' },
                 { to: '/products', label: 'Shop' },
@@ -134,9 +138,6 @@ function Navbar() {
                 </NavLink>
               ))}
             </div>
-
-            {/* Right Icons with improved styling */}
-            <div className="flex items-center space-x-4">
               {/* Cart with animation */}
               <button 
                 onClick={() => navigate("/cart")} 
