@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
-import logo from '/logo4.jpg'
+import logo from '/logofinal.png'
 
 // Enhanced Icons
 const CartIcon = () => (
@@ -92,16 +92,20 @@ function Navbar() {
           <div className="flex items-center justify-between">
             
             {/* Logo with hover effect */}
-            <NavLink 
-              to="/" 
-              className="relative group h-17 w-30 lg:h-23 lg:w-55 overflow-hidden"
-            >
-              <img 
-                src={logo} 
-                alt="Brand Logo"
-                className='w-full h-full object-contain transition-transform duration-500 '
-              />
-            </NavLink>
+           <NavLink 
+  to="/" 
+  className="flex items-center h-16 w-35 lg:h-20  lg:w-50 overflow-hidden"
+>
+  <img 
+    src={logo} 
+    alt="Brand Logo"
+    className="w-full h-full   "
+  />
+
+  <span className="text-lg lg:text-2xl font-semibold leading-6 play">
+    Creation Empire
+  </span>
+</NavLink>
 
             {/* Desktop Navigation with hover effects */}
             <div className="hidden md:flex items-center space-x-1">
@@ -311,7 +315,7 @@ function Navbar() {
       </nav>
 
       {/* Spacer with smooth transition */}
-      <div className={`transition-all duration-500 ${isScrolled ? 'h-16' : 'h-24'}`} />
+      <div className={`transition-all duration-500 ${isScrolled ? 'h-16' : 'h-16'}`} />
     </>
   )
 }
