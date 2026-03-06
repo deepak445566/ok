@@ -94,7 +94,7 @@ function Navbar() {
             {/* Logo with hover effect */}
            <NavLink 
   to="/" 
-  className="flex items-center h-16 w-35 lg:h-20  lg:w-50 overflow-hidden"
+  className="flex items-center h-16 w-40 lg:h-20  lg:w-50 overflow-hidden"
 >
   <img 
     src={logo} 

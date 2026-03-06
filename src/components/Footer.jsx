@@ -53,6 +53,7 @@ const ArrowUpIcon = () => (
 function Footer() {
   const currentYear = new Date().getFullYear();
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState({});
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -60,6 +61,14 @@ function Footer() {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  // Toggle mobile menu sections
+  const toggleSection = (title) => {
+    setMobileMenuOpen(prev => ({
+      ...prev,
+      [title]: !prev[title]
+    }));
   };
 
   // Show scroll to top button after scrolling
@@ -144,11 +153,11 @@ function Footer() {
       {/* Content - with relative z-index to appear above overlay */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
         
-        {/* Responsive Grid: 1 col mobile, 2 cols tablet, 4 cols desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12">
+        {/* Responsive Grid: Mobile - 1 column, Tablet - 2 columns, Desktop - 4 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-12">
           
-          {/* Brand Section - Full width on mobile, spans 2 on tablet */}
-          <div className="sm:col-span-2 lg:col-span-1 space-y-4 md:space-y-6 text-center sm:text-left">
+          {/* Brand Section - Full width on all devices */}
+          <div className="col-span-1 sm:col-span-2 lg:col-span-1 space-y-4 md:space-y-6 text-left">
             <Link to="/" className="inline-block group">
               <h2 className="text-xl sm:text-2xl tracking-[0.2em] font-light text-white group-hover:text-amber-400 transition-colors duration-300">
                 CREATION EMPIRE
@@ -158,15 +167,15 @@ function Footer() {
               </p>
             </Link>
             
-            <p className="text-xs sm:text-sm text-gray-300 max-w-md mx-auto sm:mx-0 leading-relaxed">
+            <p className="text-xs sm:text-sm text-gray-300 max-w-md leading-relaxed">
               Where every stitch tells a story. Luxury fashion crafted for the modern woman who embraces her power with grace.
             </p>
             
-            {/* Contact Info - Stacked on mobile */}
+            {/* Contact Info - Left aligned */}
             <div className="space-y-3 pt-2">
               <a 
                 href="mailto:info@creationempire.com" 
-                className="flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm text-gray-300 hover:text-white transition-colors group"
+                className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 hover:text-white transition-colors group"
               >
                 <span className="text-amber-400 group-hover:text-amber-300 transition-colors">
                   <MailIcon />
@@ -175,113 +184,121 @@ function Footer() {
               </a>
               <a 
                 href="tel:+917906482210" 
-                className="flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm text-gray-300 hover:text-white transition-colors group"
+                className="flex items-center gap-2 text-xs sm:text-sm text-gray-300 hover:text-white transition-colors group"
               >
                 <span className="text-amber-400 group-hover:text-amber-300 transition-colors">
                   <PhoneIcon />
                 </span>
                 <span className="group-hover:underline">+91 79064 82210</span>
               </a>
-              <div className="flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm text-gray-300">
+              <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-300">
                 <span className="text-amber-400">
                   <LocationIcon />
                 </span>
                 <span>Mumbai, India</span>
               </div>
             </div>
-
-          
           </div>
 
-          {/* Dynamic Sections */}
+          {/* Dynamic Sections - Mobile Accordion Style */}
           {footerSections.map((section) => (
-            <div key={section.title} className="text-center  sm:text-left">
-              <h3 className="text-sm uppercase tracking-wider text-amber-400 font-medium mb-4 md:mb-6 relative inline-block sm:block">
+            <div key={section.title} className="col-span-1">
+              {/* Mobile Accordion Header */}
+              <div 
+                className="sm:hidden flex items-center justify-between cursor-pointer py-3 border-b border-gray-700/60"
+                onClick={() => toggleSection(section.title)}
+              >
+                <h3 className="text-sm uppercase tracking-wider text-amber-400 font-medium">
+                  {section.title}
+                </h3>
+                <span className="text-amber-400 text-lg">
+                  {mobileMenuOpen[section.title] ? '−' : '+'}
+                </span>
+              </div>
+
+              {/* Desktop Title */}
+              <h3 className="hidden sm:block text-sm uppercase tracking-wider text-amber-400 font-medium mb-4 md:mb-6 relative">
                 {section.title}
-                <span className="absolute -bottom-2 left-1/2 sm:left-0 transform -translate-x-1/2 sm:translate-x-0 w-12 h-0.5 bg-amber-400/50 rounded-full"></span>
+                <span className="absolute -bottom-2 left-0 w-12 h-0.5 bg-amber-400/50 rounded-full"></span>
               </h3>
 
-              {section.isSocial ? (
-                <ul className="space-y-3 md:space-y-4 mt-6">
-                  {section.links.map((social, i) => (
-                    <li key={i}>
-                      <a
-                        href={social.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`flex items-center justify-center sm:justify-start gap-3 text-sm text-gray-300 hover:text-white transition-all duration-300 group ${social.color}`}
-                      >
-                        <span className="flex-shrink-0 transform group-hover:scale-110 group-hover:text-amber-400 transition-all duration-300">
-                          {social.icon}
-                        </span>
-                        <div className="flex flex-col items-center sm:items-start">
-                          <span className="font-medium leading-none group-hover:text-amber-400 transition-colors">
-                            {social.name}
+              {/* Links - Hidden on mobile when closed, always visible on desktop */}
+              <div className={`${!mobileMenuOpen[section.title] && 'hidden sm:block'} mt-2 sm:mt-0`}>
+                {section.isSocial ? (
+                  <ul className="space-y-3 md:space-y-4 py-2 sm:py-0">
+                    {section.links.map((social, i) => (
+                      <li key={i}>
+                        <a
+                          href={social.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex items-center gap-3 text-sm text-gray-300 hover:text-white transition-all duration-300 group ${social.color}`}
+                        >
+                          <span className="flex-shrink-0 transform group-hover:scale-110 group-hover:text-amber-400 transition-all duration-300">
+                            {social.icon}
                           </span>
-                          <span className="text-[8px] sm:text-[10px] text-gray-500 mt-1">
-                            {social.handle}
-                          </span>
-                        </div>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <ul className="space-y-2 md:space-y-3 mt-6">
-                  {section.links.map((link, i) => (
-                    <li key={i}>
-                      <Link
-                        to={link.url}
-                        className="text-xs sm:text-sm text-gray-300 hover:text-white hover:pl-2 transition-all duration-300 inline-block relative group"
-                      >
-                        <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                        {link.text}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                          <div className="flex flex-col">
+                            <span className="font-medium leading-none group-hover:text-amber-400 transition-colors">
+                              {social.name}
+                            </span>
+                            <span className="text-[8px] sm:text-[10px] text-gray-500 mt-1">
+                              {social.handle}
+                            </span>
+                          </div>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <ul className="space-y-2 md:space-y-3 py-2 sm:py-0">
+                    {section.links.map((link, i) => (
+                      <li key={i}>
+                        <Link
+                          to={link.url}
+                          className="text-xs sm:text-sm text-gray-300 hover:text-white hover:pl-2 transition-all duration-300 inline-block relative group"
+                        >
+                          <span className="absolute -left-2 top-1/2 -translate-y-1/2 w-1 h-1 bg-amber-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                          {link.text}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           ))}
         </div>
-
-        
 
         {/* Bottom Bar - Mobile Optimized */}
         <div className="mt-8 pt-6 border-t border-gray-700/60">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
             
-            {/* Copyright - Centered on mobile */}
+            {/* Copyright */}
             <p className="text-[10px] sm:text-xs text-gray-400 order-2 sm:order-1">
               © {currentYear} Creation Empire by Priya. All rights reserved.
             </p>
             
-            {/* Legal Links - Stacked on mobile */}
+            {/* Legal Links - Horizontal scroll on mobile if needed */}
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 order-1 sm:order-2">
-              <Link to="/privacy" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group">
+              <Link to="/privacy" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group whitespace-nowrap">
                 Privacy Policy
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-400 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <span className="text-gray-600 hidden sm:inline">•</span>
-              <Link to="/terms" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group">
-                Terms of Service
+              <Link to="/terms" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group whitespace-nowrap">
+                Terms
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-400 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <span className="text-gray-600 hidden sm:inline">•</span>
-              <Link to="/returns" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group">
-                Returns & Exchanges
+              <Link to="/returns" className="text-[10px] sm:text-xs text-gray-400 hover:text-white transition-colors relative group whitespace-nowrap">
+                Returns
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-amber-400 group-hover:w-full transition-all duration-300"></span>
               </Link>
             </div>
           </div>
           
-          {/* Made with love - Mobile only */}
-          <p className="text-center text-[8px] text-gray-600 mt-4 sm:hidden">
-            Made with ❤️ in India
-          </p>
-
-          {/* Desktop only - Made with love */}
-          <p className="hidden sm:block text-center text-[8px] text-gray-600 mt-4">
+          {/* Made with love */}
+          <p className="text-center text-[8px] text-gray-600 mt-4">
             Made with ❤️ by Creation Empire team in India
           </p>
         </div>
