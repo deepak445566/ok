@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAppContext } from '../context/AppContext'
 import toast from 'react-hot-toast'
-import logo from '/logo.png'
+import logo from '/logo4.jpg'
 
 // Enhanced Icons
 const CartIcon = () => (
@@ -97,7 +97,7 @@ function Navbar() {
               className="relative group h-17 w-30 lg:h-23 lg:w-55 overflow-hidden"
             >
               <img 
-                src='/public/logo4.jpg' 
+                src={logo} 
                 alt="Brand Logo"
                 className='w-full h-full object-contain transition-transform duration-500 '
               />
